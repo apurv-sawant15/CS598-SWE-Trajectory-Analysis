@@ -1,0 +1,327 @@
+================================================================================
+SWE-Agent Trajectory Analysis: Tool Use Analysis
+Method: locate_tool_use
+================================================================================
+
+Format:
+  -Input argument: str->ID of the instance
+  -Output: dictionary -> the key will be the tool name, and the value will be how many times the tool is called.
+
+--------------------------------------------------------------------------------
+
+Instance ID: astropy__astropy-13236
+Output: {'find': 5, 'str_replace_editor_view': 8, 'grep': 6, 'str_replace_editor_create': 10, 'cd': 22, 'python': 19, 'str_replace_editor_str_replace': 1, 'submit': 2, 'rm': 2, 'git': 1}
+Summary:
+  - Total tool calls: 76
+  - Editor tools (19 calls):
+      str_replace_editor_create: 10
+      str_replace_editor_view: 8
+      str_replace_editor_str_replace: 1
+  - Shell commands (57 calls):
+      cd: 22
+      python: 19
+      grep: 6
+      find: 5
+      submit: 2
+      rm: 2
+      git: 1
+
+Instance ID: astropy__astropy-14598
+Output: {'find': 1, 'str_replace_editor_view': 14, 'grep': 5, 'str_replace_editor_create': 9, 'cd': 22, 'python': 19, 'str_replace_editor_str_replace': 6, 'submit': 2, 'rm': 2, 'git': 1}
+Summary:
+  - Total tool calls: 81
+  - Editor tools (29 calls):
+      str_replace_editor_view: 14
+      str_replace_editor_create: 9
+      str_replace_editor_str_replace: 6
+  - Shell commands (52 calls):
+      cd: 22
+      python: 19
+      grep: 5
+      submit: 2
+      rm: 2
+      find: 1
+      git: 1
+
+Instance ID: django__django-11141
+Output: {'str_replace_editor_view': 17, 'cd': 34, 'find': 4, 'grep': 2, 'str_replace_editor_create': 8, 'python': 25, 'str_replace_editor_str_replace': 6, 'submit': 2, 'rm': 1, 'git': 5}
+Summary:
+  - Total tool calls: 104
+  - Editor tools (31 calls):
+      str_replace_editor_view: 17
+      str_replace_editor_create: 8
+      str_replace_editor_str_replace: 6
+  - Shell commands (73 calls):
+      cd: 34
+      python: 25
+      git: 5
+      find: 4
+      grep: 2
+      submit: 2
+      rm: 1
+
+Instance ID: django__django-11400
+Output: {'str_replace_editor_view': 8, 'grep': 9, 'find': 3, 'str_replace_editor_create': 9, 'cd': 24, 'python': 22, 'str_replace_editor_str_replace': 4, 'submit': 2, 'rm': 1, 'git': 1}
+Summary:
+  - Total tool calls: 83
+  - Editor tools (21 calls):
+      str_replace_editor_create: 9
+      str_replace_editor_view: 8
+      str_replace_editor_str_replace: 4
+  - Shell commands (62 calls):
+      cd: 24
+      python: 22
+      grep: 9
+      find: 3
+      submit: 2
+      rm: 1
+      git: 1
+
+Instance ID: django__django-11815
+Output: {'find': 3, 'str_replace_editor_view': 2}
+Summary:
+  - Total tool calls: 5
+  - Editor tools (2 calls):
+      str_replace_editor_view: 2
+  - Shell commands (3 calls):
+      find: 3
+
+Instance ID: django__django-13195
+Output: {'str_replace_editor_view': 12, 'find': 3, 'str_replace_editor_create': 11, 'cd': 30, 'python': 23, 'str_replace_editor_str_replace': 4, 'submit': 2, 'rm': 2, 'git': 6}
+Summary:
+  - Total tool calls: 93
+  - Editor tools (27 calls):
+      str_replace_editor_view: 12
+      str_replace_editor_create: 11
+      str_replace_editor_str_replace: 4
+  - Shell commands (66 calls):
+      cd: 30
+      python: 23
+      git: 6
+      find: 3
+      submit: 2
+      rm: 2
+
+Instance ID: django__django-13212
+Output: {'str_replace_editor_view': 9, 'cd': 25, 'find': 2, 'grep': 5, 'str_replace_editor_create': 6, 'python': 16, 'str_replace_editor_str_replace': 14, 'submit': 2, 'rm': 2}
+Summary:
+  - Total tool calls: 81
+  - Editor tools (29 calls):
+      str_replace_editor_str_replace: 14
+      str_replace_editor_view: 9
+      str_replace_editor_create: 6
+  - Shell commands (52 calls):
+      cd: 25
+      python: 16
+      grep: 5
+      find: 2
+      submit: 2
+      rm: 2
+
+Instance ID: django__django-13925
+Output: {'str_replace_editor_view': 70, 'find': 1, 'str_replace_editor_create': 1, 'cd': 2, 'python': 2, 'str_replace_editor_str_replace': 1}
+Summary:
+  - Total tool calls: 77
+  - Editor tools (72 calls):
+      str_replace_editor_view: 70
+      str_replace_editor_create: 1
+      str_replace_editor_str_replace: 1
+  - Shell commands (5 calls):
+      cd: 2
+      python: 2
+      find: 1
+
+Instance ID: django__django-14034
+Output: {'str_replace_editor_view': 7, 'grep': 9, 'str_replace_editor_create': 6, 'cd': 32, 'python': 23, 'str_replace_editor_str_replace': 5, 'find': 1, 'submit': 2, 'rm': 1}
+Summary:
+  - Total tool calls: 86
+  - Editor tools (18 calls):
+      str_replace_editor_view: 7
+      str_replace_editor_create: 6
+      str_replace_editor_str_replace: 5
+  - Shell commands (68 calls):
+      cd: 32
+      python: 23
+      grep: 9
+      submit: 2
+      find: 1
+      rm: 1
+
+Instance ID: django__django-14315
+Output: {'str_replace_editor_view': 13, 'str_replace_editor_create': 8, 'cd': 32, 'python': 15, 'git': 8, 'find': 4, 'str_replace_editor_str_replace': 7, 'grep': 3, 'submit': 2, 'rm': 2}
+Summary:
+  - Total tool calls: 94
+  - Editor tools (28 calls):
+      str_replace_editor_view: 13
+      str_replace_editor_create: 8
+      str_replace_editor_str_replace: 7
+  - Shell commands (66 calls):
+      cd: 32
+      python: 15
+      git: 8
+      find: 4
+      grep: 3
+      submit: 2
+      rm: 2
+
+Instance ID: django__django-14792
+Output: {'str_replace_editor_view': 13, 'find': 7, 'str_replace_editor_create': 12, 'cd': 35, 'python': 23, 'str_replace_editor_str_replace': 9, 'grep': 8, 'tail': 1, 'submit': 2, 'rm': 2, 'git': 1}
+Summary:
+  - Total tool calls: 113
+  - Editor tools (34 calls):
+      str_replace_editor_view: 13
+      str_replace_editor_create: 12
+      str_replace_editor_str_replace: 9
+  - Shell commands (79 calls):
+      cd: 35
+      python: 23
+      grep: 8
+      find: 7
+      submit: 2
+      rm: 2
+      tail: 1
+      git: 1
+
+Instance ID: django__django-15022
+Output: {'str_replace_editor_view': 17, 'grep': 12, 'str_replace_editor_create': 15, 'cd': 36, 'python': 36, 'str_replace_editor_str_replace': 22, 'find': 1}
+Summary:
+  - Total tool calls: 139
+  - Editor tools (54 calls):
+      str_replace_editor_str_replace: 22
+      str_replace_editor_view: 17
+      str_replace_editor_create: 15
+  - Shell commands (85 calls):
+      cd: 36
+      python: 36
+      grep: 12
+      find: 1
+
+Instance ID: django__django-15987
+Output: {'str_replace_editor_view': 14, 'cd': 34, 'find': 1, 'grep': 7, 'str_replace_editor_create': 3, 'python': 19, 'str_replace_editor_str_replace': 9, 'submit': 2, 'rm': 2, 'git': 5}
+Summary:
+  - Total tool calls: 96
+  - Editor tools (26 calls):
+      str_replace_editor_view: 14
+      str_replace_editor_str_replace: 9
+      str_replace_editor_create: 3
+  - Shell commands (70 calls):
+      cd: 34
+      python: 19
+      grep: 7
+      git: 5
+      submit: 2
+      rm: 2
+      find: 1
+
+Instance ID: pydata__xarray-7229
+Output: {'str_replace_editor_view': 25, 'grep': 12, 'str_replace_editor_create': 8, 'cd': 28, 'python': 27, 'find': 2, 'str_replace_editor_str_replace': 6, 'submit': 2, 'rm': 1}
+Summary:
+  - Total tool calls: 111
+  - Editor tools (39 calls):
+      str_replace_editor_view: 25
+      str_replace_editor_create: 8
+      str_replace_editor_str_replace: 6
+  - Shell commands (72 calls):
+      cd: 28
+      python: 27
+      grep: 12
+      find: 2
+      submit: 2
+      rm: 1
+
+Instance ID: scikit-learn__scikit-learn-14087
+Output: {'str_replace_editor_view': 8, 'cd': 5, 'grep': 1, 'str_replace_editor_create': 1, 'python': 4, 'str_replace_editor_str_replace': 4, 'submit': 1}
+Summary:
+  - Total tool calls: 24
+  - Editor tools (13 calls):
+      str_replace_editor_view: 8
+      str_replace_editor_str_replace: 4
+      str_replace_editor_create: 1
+  - Shell commands (11 calls):
+      cd: 5
+      python: 4
+      grep: 1
+      submit: 1
+
+Instance ID: scikit-learn__scikit-learn-26194
+Output: {'str_replace_editor_view': 11, 'cd': 35, 'grep': 2, 'str_replace_editor_create': 4, 'python': 31, 'str_replace_editor_str_replace': 15, 'submit': 2, 'rm': 1, 'git': 1}
+Summary:
+  - Total tool calls: 102
+  - Editor tools (30 calls):
+      str_replace_editor_str_replace: 15
+      str_replace_editor_view: 11
+      str_replace_editor_create: 4
+  - Shell commands (72 calls):
+      cd: 35
+      python: 31
+      grep: 2
+      submit: 2
+      rm: 1
+      git: 1
+
+Instance ID: sphinx-doc__sphinx-10614
+Output: {'str_replace_editor_view': 13, 'grep': 10, 'str_replace_editor_create': 7, 'cd': 19, 'python': 18, 'find': 6, 'cat': 5, 'str_replace_editor_str_replace': 13, 'rm': 2, 'submit': 2, 'git': 1}
+Summary:
+  - Total tool calls: 96
+  - Editor tools (33 calls):
+      str_replace_editor_view: 13
+      str_replace_editor_str_replace: 13
+      str_replace_editor_create: 7
+  - Shell commands (63 calls):
+      cd: 19
+      python: 18
+      grep: 10
+      find: 6
+      cat: 5
+      rm: 2
+      submit: 2
+      git: 1
+
+Instance ID: sphinx-doc__sphinx-9229
+Output: {'str_replace_editor_view': 23, 'str_replace_editor_create': 12, 'cd': 53, 'grep': 17, 'python': 25, 'str_replace_editor_str_replace': 15, 'git': 10, 'sed': 1}
+Summary:
+  - Total tool calls: 156
+  - Editor tools (50 calls):
+      str_replace_editor_view: 23
+      str_replace_editor_str_replace: 15
+      str_replace_editor_create: 12
+  - Shell commands (106 calls):
+      cd: 53
+      python: 25
+      grep: 17
+      git: 10
+      sed: 1
+
+Instance ID: sympy__sympy-13852
+Output: {'find': 3, 'str_replace_editor_view': 11, 'str_replace_editor_create': 3, 'cd': 28, 'python': 20, 'grep': 2, 'str_replace_editor_str_replace': 7, 'submit': 2, 'rm': 1, 'git': 4}
+Summary:
+  - Total tool calls: 81
+  - Editor tools (21 calls):
+      str_replace_editor_view: 11
+      str_replace_editor_str_replace: 7
+      str_replace_editor_create: 3
+  - Shell commands (60 calls):
+      cd: 28
+      python: 20
+      git: 4
+      find: 3
+      grep: 2
+      submit: 2
+      rm: 1
+
+Instance ID: sympy__sympy-13877
+Output: {'str_replace_editor_view': 13, 'cd': 7, 'grep': 3, 'str_replace_editor_create': 2, 'python': 4, 'str_replace_editor_str_replace': 1}
+Summary:
+  - Total tool calls: 30
+  - Editor tools (16 calls):
+      str_replace_editor_view: 13
+      str_replace_editor_create: 2
+      str_replace_editor_str_replace: 1
+  - Shell commands (14 calls):
+      cd: 7
+      python: 4
+      grep: 3
+
+--------------------------------------------------------------------------------
+End of Report
+================================================================================
