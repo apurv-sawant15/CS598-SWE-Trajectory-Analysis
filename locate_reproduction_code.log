@@ -10,166 +10,64 @@ Format:
 --------------------------------------------------------------------------------
 
 Instance ID: astropy__astropy-13236
-Output: [50]
-Details:
-  - Step 50: reproduce_issue.py
-    Thought: Now let me run the original reproduction script to confirm the changes work:...
+Output: [14, 18, 20, 22, 24, 38, 40, 42, 45, 50]
 
 Instance ID: astropy__astropy-14598
-Output: [13, 15, 21, 34]
-Details:
-  - Step 13: reproduce_issue.py
-    Thought: Now let me create a script to reproduce the issue:...
-  - Step 15: debug_issue.py
-    Thought: Great! I've reproduced the issue. The problem occurs when the string value is long enough to require...
-  - Step 21: debug_detailed.py
-    Thought: Now let me create a more detailed debug script to understand exactly what's happening:...
-  - Step 34: debug_parse_value.py
-    Thought: Great! Now I can see that my fix is working correctly in the manual trace. The joined values before ...
+Output: [13, 15, 21, 25, 34, 42, 44, 49, 56]
 
 Instance ID: django__django-11141
-Output: [13, 31, 37]
-Details:
-  - Step 13: reproduce_issue.py
-    Thought: So this is a namespace package (no `__init__.py` in the root namespace directory). The current test ...
-  - Step 31: debug_namespace.py
-    Thought: Hmm, the test is still failing. Let me check what's happening. Let's debug this by checking what the...
-  - Step 37: debug_test.py
-    Thought: I see the issue! The namespace package has `__path__` so it passes the check on line 88, and gets ad...
+Output: [13, 20, 31, 37, 46, 50, 53, 55]
 
 Instance ID: django__django-11400
-Output: [13]
-Details:
-  - Step 13: reproduce_issue.py
-    Thought: Now let me create a test script to reproduce the issue:...
+Output: [13, 24, 26, 34, 39, 44, 46, 48, 51]
 
 Instance ID: django__django-11815
 Output: []
-Details: No reproduction code found in this trajectory
 
 Instance ID: django__django-13195
-Output: [9, 13, 15, 17]
-Details:
-  - Step 9: reproduce_issue.py
-    Thought: I can see the same pattern here. When setting the session cookie (lines 69-77), it includes `samesit...
-  - Step 13: reproduce_real_issue.py
-    Thought: Now I understand! The issue is more subtle. When `delete_cookie` calls `set_cookie`, it doesn't pass...
-  - Step 15: debug_cookies.py
-    Thought: Wait, there's something wrong with my test. Let me check how the cookie attributes are being read:...
-  - Step 17: final_reproduce.py
-    Thought: Now I understand! The issue is that when we call `delete_cookie` on a fresh response (which is what ...
+Output: [9, 13, 15, 17, 20, 29, 31, 36, 39, 56]
 
 Instance ID: django__django-13212
-Output: []
-Details: No reproduction code found in this trajectory
+Output: [14, 37, 39, 41, 46, 53]
 
 Instance ID: django__django-13925
 Output: [5]
-Details:
-  - Step 5: reproduce_issue.py
-    Thought: After analyzing the code and the PR description, I understand the issue. The problem is that in Djan...
 
 Instance ID: django__django-14034
-Output: [6, 29, 34]
-Details:
-  - Step 6: reproduce_issue.py
-    Thought: Now let's create a script to reproduce the issue described in the PR:...
-  - Step 29: debug_test.py
-    Thought: I reverted the change. Now I need to think about this more carefully. The issue is that we need to d...
-  - Step 34: debug_widget.py
-    Thought: I reverted the change again. Let me think about this differently. 
-
-Looking at the existing test mor...
+Output: [6, 13, 15, 29, 34, 48]
 
 Instance ID: django__django-14315
-Output: [9]
-Details:
-  - Step 9: reproduce_issue.py
-    Thought: Oracle also returns `None` for the environment.
-
-Now let's create a script to reproduce the issue:...
+Output: [9, 18, 39, 41, 43, 46, 58]
 
 Instance ID: django__django-14792
-Output: [7]
-Details:
-  - Step 7: reproduce_issue.py
-    Thought: Now I can see the `_prepare_tzname_delta()` method on lines 46-51. This method reverses the sign in ...
+Output: [7, 12, 18, 34, 37, 39, 41, 46, 50, 52, 65, 75]
 
 Instance ID: django__django-15022
-Output: [13, 47, 50, 72, 96]
-Details:
-  - Step 13: reproduce_issue.py
-    Thought: Now let me create a test script to reproduce the issue:...
-  - Step 47: debug_test.py
-    Thought: The failing test is for the search string 'Mary Jonathan Duo' which should return 1 result but is re...
-  - Step 50: debug_failing_test.py
-    Thought: Let me add some debug output to understand what's happening. Let me temporarily modify the test to s...
-  - Step 72: minimal_debug.py
-    Thought: Still failing. Let me debug this more systematically. Let me create a minimal test to understand wha...
-  - Step 96: debug_optimization.py
-    Thought: Let me debug this by adding some print statements to see what's happening:...
+Output: [13, 28, 32, 34, 38, 47, 50, 56, 72, 76, 82, 88, 96, 99, 101]
 
 Instance ID: django__django-15987
-Output: [11]
-Details:
-  - Step 11: reproduce_issue.py
-    Thought: Now let's create a script to reproduce the issue. The problem is that when `FIXTURE_DIRS` contains b...
+Output: [11, 25, 58]
 
 Instance ID: pydata__xarray-7229
-Output: [12, 69]
-Details:
-  - Step 12: reproduce_issue.py
-    Thought: Now I can see the issue more clearly. The problem is in the `where` function. When `keep_attrs=True`...
-  - Step 69: debug_scalar.py
-    Thought: There's an issue with scalar arguments. Let me check what's happening:...
+Output: [12, 32, 37, 39, 41, 58, 60, 69]
 
 Instance ID: scikit-learn__scikit-learn-14087
 Output: [7]
-Details:
-  - Step 7: reproduce_error.py
-    Thought: 2. Let's create a script to reproduce the error:...
 
 Instance ID: scikit-learn__scikit-learn-26194
-Output: [7, 23]
-Details:
-  - Step 7: reproduce_issue.py
-    Thought: ## Step 2: Create a Script to Reproduce the Error
-
-Now let's create a script to reproduce the issue ...
-  - Step 23: debug_test.py
-    Thought: The test expects the first threshold to be 2.0 (which was `max(y_score) + 1 = 1.0 + 1 = 2.0`), but o...
+Output: [7, 18, 23, 56]
 
 Instance ID: sphinx-doc__sphinx-10614
-Output: [5, 21]
-Details:
-  - Step 5: reproduce_issue.py
-    Thought: Now I can see the issue! The problem is in lines 416 and 421. When generating URLs for SVG format, t...
-  - Step 21: debug_inheritance.py
-    Thought: Now I can see the issue clearly:
-
-1. **First SVG** (embedded in root `index.html`): Links are `../.....
+Output: [5, 21, 27, 53, 60, 62, 73]
 
 Instance ID: sphinx-doc__sphinx-9229
-Output: [16, 56]
-Details:
-  - Step 16: test_reproduce.py
-    Thought: Now I need to understand the issue better. Let me create a simple test script to reproduce the probl...
-  - Step 56: debug_test.py
-    Thought: I see! The test file has a type alias `T` with a docstring comment `#: A list of int`. The test expe...
+Output: [1, 16, 19, 23, 25, 33, 44, 46, 48, 50, 56, 70]
 
 Instance ID: sympy__sympy-13852
-Output: [4]
-Details:
-  - Step 4: reproduce_issue.py
-    Thought: Now let's create a script to reproduce the issues mentioned in the PR:...
+Output: [4, 26, 31]
 
 Instance ID: sympy__sympy-13877
-Output: [9]
-Details:
-  - Step 9: reproduce_error.py
-    Thought: ## Step 2: Create a Script to Reproduce the Error
-
-Let's create a script to reproduce the error desc...
+Output: [9, 18]
 
 --------------------------------------------------------------------------------
 End of Report

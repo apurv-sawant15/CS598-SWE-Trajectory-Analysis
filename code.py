@@ -17,19 +17,13 @@ def locate_reproduction_code(instance_id: str) -> List[int]:
     """
     Identifies the steps in a trajectory where the agent creates reproduction tests.
     
-    A reproduction test is code created specifically to reproduce/debug the bug or issue
-    BEFORE fixing it. This is different from test code created to verify the fix works.
     
-    Heuristics used:
-    1. Action type: "str_replace_editor create"
-    2. Filename contains keywords like "reproduce", "debug" (strongest indicator)
-    3. Can also check agent's thought for reproduction intent (weaker indicator)
     
     Args:
-        instance_id (str): The ID of the instance to analyze (e.g., "django__django-11141")
+        instance_id (str): The ID of the instance to analyze.
         
     Returns:
-        List[int]: A list of step indices (0-based) where reproduction code is created.
+        List[int]: A list of step indices where reproduction code is created.
     """
     # Find the trajectory file
     traj_file = find_trajectory_file(instance_id)
@@ -49,22 +43,54 @@ def locate_reproduction_code(instance_id: str) -> List[int]:
     reproduction_steps = []
     
     # Primary keywords that indicate reproduction code in filenames
-    # These are strong indicators - files with these words are likely reproduction scripts
     filename_keywords = [
         'reproduce',
         'debug',
+        'test_',       
+        '_test',       
+        'verify',
+        'check',
+        'demo',
+        'example',
+        'issue',
+        'bug',
+        'minimal',
+        'poc',         
+        'script',
+        'run_',
+        'try_',
+    ]
+    
+    # Thought patterns that indicate reproduction intent
+    thought_patterns = [
+        r'reproduce the issue',
+        r'reproduce the bug',
+        r'reproduce the problem',
+        r'reproduce the error',
+        r'test.*to reproduce',
+        r'script to reproduce',
+        r'verify the (bug|issue|problem|fix)',
+        r'test the (bug|issue|problem|fix)',
+        r'confirm the (bug|issue|problem|fix)',
+        r'create a (test |reproduction |)script',
+        r'let\'?s create a script',
+        r'create.*to test',
+        r'create.*to verify',
+        r'demonstrate the issue',
+        r'minimal.*example',
+        r'test case',
     ]
     
     for step_idx, step in enumerate(trajectory):
         action = step.get('action', '')
         thought = step.get('thought', '') or ''
+        thought_lower = thought.lower()
         
         # Check if this is a file creation action
         if 'str_replace_editor create' not in action:
             continue
         
         # Extract the filepath from the action
-        # Format: str_replace_editor create /path/to/file.py --file_text '...'
         match = re.match(r'str_replace_editor create\s+(\S+)', action)
         if not match:
             continue
@@ -73,13 +99,30 @@ def locate_reproduction_code(instance_id: str) -> List[int]:
         filename = os.path.basename(filepath)
         filename_lower = filename.lower()
         
-        # Check if filename contains reproduction/debug keywords
-        # This is the primary heuristic as stated in the hint
+        # Skip non-Python files
+        if not filename_lower.endswith('.py'):
+            continue
+        
         is_reproduction = False
+        
+        # Check if filename contains reproduction/test keywords
         for keyword in filename_keywords:
             if keyword in filename_lower:
                 is_reproduction = True
                 break
+        
+        # Check if the thought indicates reproduction intent
+        if not is_reproduction:
+            for pattern in thought_patterns:
+                if re.search(pattern, thought_lower):
+                    is_reproduction = True
+                    break
+        
+        # Check if it's a standalone script in /testbed root
+        if not is_reproduction:
+            if re.match(r'^/testbed/[^/]+\.py$', filepath):
+                if filename_lower not in ['__init__.py', 'setup.py', 'conftest.py']:
+                    is_reproduction = True
         
         if is_reproduction:
             reproduction_steps.append(step_idx)
@@ -100,7 +143,19 @@ def find_trajectory_file(instance_id: str) -> Optional[str]:
     # Get the script's directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Search in both trajectory directories
+    # First, look for trajectory folder directly in root directory
+    instance_dir = os.path.join(script_dir, instance_id)
+    if os.path.isdir(instance_dir):
+        traj_file = os.path.join(instance_dir, f'{instance_id}.traj')
+        if os.path.exists(traj_file):
+            return traj_file
+    
+    # Also check for .traj file directly in root (alternative structure)
+    traj_file = os.path.join(script_dir, f'{instance_id}.traj')
+    if os.path.exists(traj_file):
+        return traj_file
+    
+    # Fallback: Search in subdirectory structure (for backward compatibility)
     search_dirs = [
         os.path.join(script_dir, 'claude-sonnet-trajs'),
         os.path.join(script_dir, 'Qwen-2.5-Coder-Instruct-trajs'),
@@ -108,26 +163,19 @@ def find_trajectory_file(instance_id: str) -> Optional[str]:
     
     for search_dir in search_dirs:
         # Look for the instance directory
-        instance_dir = os.path.join(search_dir, instance_id)
-        if os.path.isdir(instance_dir):
+        sub_instance_dir = os.path.join(search_dir, instance_id)
+        if os.path.isdir(sub_instance_dir):
             # Find the .traj file
-            traj_pattern = os.path.join(instance_dir, f'{instance_id}.traj')
+            traj_pattern = os.path.join(sub_instance_dir, f'{instance_id}.traj')
             if os.path.exists(traj_pattern):
                 return traj_pattern
-    
-    # If not found by exact match, try glob search
-    for search_dir in search_dirs:
-        pattern = os.path.join(search_dir, '**', f'{instance_id}.traj')
-        matches = glob.glob(pattern, recursive=True)
-        if matches:
-            return matches[0]
     
     return None
 
 
 def get_all_instance_ids() -> List[str]:
     """
-    Get all instance IDs from both trajectory directories.
+    Get all instance IDs from trajectory folders.
     
     Returns:
         List of instance IDs.
@@ -135,62 +183,33 @@ def get_all_instance_ids() -> List[str]:
     script_dir = os.path.dirname(os.path.abspath(__file__))
     instance_ids = []
     
-    search_dirs = [
-        os.path.join(script_dir, 'claude-sonnet-trajs'),
-        os.path.join(script_dir, 'Qwen-2.5-Coder-Instruct-trajs'),
-    ]
+    # Look for trajectory folders directly in root directory
+    for item in os.listdir(script_dir):
+        item_path = os.path.join(script_dir, item)
+        if os.path.isdir(item_path) and '__' in item:  # Instance IDs contain '__'
+            traj_file = os.path.join(item_path, f'{item}.traj')
+            if os.path.exists(traj_file):
+                instance_ids.append(item)
     
-    for search_dir in search_dirs:
-        if not os.path.exists(search_dir):
-            continue
-        for item in os.listdir(search_dir):
-            item_path = os.path.join(search_dir, item)
-            if os.path.isdir(item_path):
-                # Check if there's a .traj file
-                traj_file = os.path.join(item_path, f'{item}.traj')
-                if os.path.exists(traj_file):
-                    instance_ids.append(item)
+    # If no folders found in root, fallback to subdirectory structure
+    if not instance_ids:
+        search_dirs = [
+            os.path.join(script_dir, 'claude-sonnet-trajs'),
+            os.path.join(script_dir, 'Qwen-2.5-Coder-Instruct-trajs'),
+        ]
+        
+        for search_dir in search_dirs:
+            if not os.path.exists(search_dir):
+                continue
+            for item in os.listdir(search_dir):
+                item_path = os.path.join(search_dir, item)
+                if os.path.isdir(item_path):
+                    # Check if there's a .traj file
+                    traj_file = os.path.join(item_path, f'{item}.traj')
+                    if os.path.exists(traj_file):
+                        instance_ids.append(item)
     
     return sorted(instance_ids)
-
-
-def get_step_details(instance_id: str, step_idx: int) -> dict:
-    """
-    Get details about a specific step in a trajectory.
-    
-    Args:
-        instance_id: The instance ID
-        step_idx: The step index
-        
-    Returns:
-        Dictionary with step details.
-    """
-    traj_file = find_trajectory_file(instance_id)
-    if not traj_file:
-        return {}
-    
-    with open(traj_file, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    trajectory = data.get('trajectory', [])
-    if step_idx >= len(trajectory):
-        return {}
-    
-    step = trajectory[step_idx]
-    action = step.get('action', '')
-    
-    # Extract filename from action
-    filename = ''
-    match = re.match(r'str_replace_editor create\s+(\S+)', action)
-    if match:
-        filename = os.path.basename(match.group(1))
-    
-    return {
-        'step_idx': step_idx,
-        'action': action[:200] + '...' if len(action) > 200 else action,
-        'thought': (step.get('thought', '') or '')[:200],
-        'filename': filename,
-    }
 
 
 def generate_log_file(output_file: str = 'locate_reproduction_code.log'):
@@ -224,17 +243,6 @@ def generate_log_file(output_file: str = 'locate_reproduction_code.log'):
             f.write(f"Instance ID: {instance_id}\n")
             f.write(f"Output: {steps}\n")
             
-            # Write details for each step
-            if steps:
-                f.write("Details:\n")
-                for step_idx in steps:
-                    details = get_step_details(instance_id, step_idx)
-                    f.write(f"  - Step {step_idx}: {details.get('filename', 'N/A')}\n")
-                    thought = details.get('thought', 'N/A')[:100]
-                    f.write(f"    Thought: {thought}...\n")
-            else:
-                f.write("Details: No reproduction code found in this trajectory\n")
-            
             f.write("\n")
         
         f.write("-" * 80 + "\n")
@@ -249,20 +257,7 @@ def locate_search(instance_id: str) -> List[int]:
     """
     Identifies the steps in a trajectory where the model searches or navigates inside the codebase.
     
-    SWE-Agent introduces special commands for searching:
-    - find_file: searches for files by name
-    - search_file: searches for content within a file
-    - search_dir: searches within a directory
-    
-    Additionally, bash commands are used:
-    - find: find files in directories
-    - grep: search for patterns in files
-    - cat: view file contents
-    - ls: list directory contents
-    - cd: change directory (often combined with other search commands)
-    
-    Editor commands are also used for navigation:
-    - str_replace_editor view: view files or directories
+
     
     Args:
         instance_id (str): The ID of the instance to analyze (e.g., "django__django-11141")
@@ -367,93 +362,6 @@ def locate_search(instance_id: str) -> List[int]:
     return search_steps
 
 
-def get_search_step_details(instance_id: str, step_idx: int) -> dict:
-    """
-    Get details about a specific search step in a trajectory.
-    
-    Args:
-        instance_id: The instance ID
-        step_idx: The step index
-        
-    Returns:
-        Dictionary with step details including action type and search target.
-    """
-    traj_file = find_trajectory_file(instance_id)
-    if not traj_file:
-        return {}
-    
-    with open(traj_file, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    trajectory = data.get('trajectory', [])
-    if step_idx >= len(trajectory):
-        return {}
-    
-    step = trajectory[step_idx]
-    action = step.get('action', '') or ''
-    thought = step.get('thought', '') or ''
-    
-    # Determine the type of search action
-    action_type = 'unknown'
-    target = ''
-    
-    if 'str_replace_editor view' in action:
-        action_type = 'view'
-        # Extract path from: str_replace_editor view /path
-        match = re.search(r'str_replace_editor\s+view\s+(\S+)', action)
-        if match:
-            target = match.group(1)
-    elif 'find_file' in action:
-        action_type = 'find_file'
-        target = action
-    elif 'search_file' in action:
-        action_type = 'search_file'
-        target = action
-    elif 'search_dir' in action:
-        action_type = 'search_dir'
-        target = action
-    elif re.search(r'\bfind\s+', action):
-        action_type = 'bash_find'
-        target = action[:150]
-    elif re.search(r'\bgrep\s+', action):
-        action_type = 'bash_grep'
-        target = action[:150]
-    elif re.search(r'\bcat\s+', action):
-        action_type = 'bash_cat'
-        match = re.search(r'\bcat\s+(\S+)', action)
-        if match:
-            target = match.group(1)
-    elif re.search(r'\bls\b', action):
-        action_type = 'bash_ls'
-        target = action[:100]
-    elif re.search(r'\btail\s+', action):
-        action_type = 'bash_tail'
-        match = re.search(r'\btail\s+.*?(\S+)\s*$', action)
-        if match:
-            target = match.group(1)
-        else:
-            target = action[:100]
-    elif re.search(r'\bhead\s+', action):
-        action_type = 'bash_head'
-        target = action[:100]
-    elif re.search(r'\bgit\s+(show|log|diff)\s+', action):
-        action_type = 'git_view'
-        target = action[:100]
-    elif re.search(r'\bsed\s+', action):
-        action_type = 'bash_sed'
-        target = action[:100]
-    else:
-        action_type = 'other_search'
-        target = action[:100]
-    
-    return {
-        'step_idx': step_idx,
-        'action_type': action_type,
-        'target': target,
-        'action': action[:200] + '...' if len(action) > 200 else action,
-        'thought': thought[:200] if thought else '',
-    }
-
 
 def generate_search_log_file(output_file: str = 'locate_search.log'):
     """
@@ -485,21 +393,6 @@ def generate_search_log_file(output_file: str = 'locate_search.log'):
             steps = locate_search(instance_id)
             f.write(f"Instance ID: {instance_id}\n")
             f.write(f"Output: {steps}\n")
-            
-            # Write details for each step
-            if steps:
-                f.write("Details:\n")
-                for step_idx in steps:
-                    details = get_search_step_details(instance_id, step_idx)
-                    action_type = details.get('action_type', 'N/A')
-                    target = details.get('target', 'N/A')
-                    # Truncate long targets
-                    if len(target) > 80:
-                        target = target[:77] + '...'
-                    f.write(f"  - Step {step_idx} [{action_type}]: {target}\n")
-            else:
-                f.write("Details: No search/navigation found in this trajectory\n")
-            
             f.write("\n")
         
         f.write("-" * 80 + "\n")
@@ -514,9 +407,6 @@ def locate_tool_use(instance_id: str) -> dict:
     """
     Identifies and counts tool uses in a trajectory.
     
-    Tools include:
-    1. str_replace_editor commands: view, create, str_replace, insert, undo_edit
-    2. Shell/bash commands: python, cd, grep, find, cat, ls, etc.
     
     Args:
         instance_id (str): The ID of the instance to analyze (e.g., "django__django-11141")
@@ -651,30 +541,7 @@ def generate_tool_use_log_file(output_file: str = 'locate_tool_use.log'):
         for instance_id in instance_ids:
             tool_counts = locate_tool_use(instance_id)
             f.write(f"Instance ID: {instance_id}\n")
-            f.write(f"Output: {tool_counts}\n")
-            
-            # Write a summary
-            if tool_counts:
-                total_tool_calls = sum(tool_counts.values())
-                f.write(f"Summary:\n")
-                f.write(f"  - Total tool calls: {total_tool_calls}\n")
-                
-                # Group by category
-                editor_tools = {k: v for k, v in tool_counts.items() if k.startswith('str_replace_editor_')}
-                shell_tools = {k: v for k, v in tool_counts.items() if not k.startswith('str_replace_editor_')}
-                
-                if editor_tools:
-                    f.write(f"  - Editor tools ({sum(editor_tools.values())} calls):\n")
-                    for tool, count in sorted(editor_tools.items(), key=lambda x: -x[1]):
-                        f.write(f"      {tool}: {count}\n")
-                
-                if shell_tools:
-                    f.write(f"  - Shell commands ({sum(shell_tools.values())} calls):\n")
-                    for tool, count in sorted(shell_tools.items(), key=lambda x: -x[1]):
-                        f.write(f"      {tool}: {count}\n")
-            else:
-                f.write("Summary: No tool uses found in this trajectory\n")
-            
+            f.write(f"Output: {tool_counts}\n")            
             f.write("\n")
         
         f.write("-" * 80 + "\n")
